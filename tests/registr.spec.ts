@@ -1,31 +1,48 @@
 import test, { expect } from "@playwright/test";
 import { userList } from "../test-data/users";
+import HomePage from "../pom/forms/pages/HomePage";
+import SignInForm from "../pom/forms/forms/SignInForm";
+let homePage: HomePage;
+let signInForm: SignInForm;
 
-test.beforeEach(async ({ page }) => {
-  const signinButton = page.locator(
-    '//button[contains(@class,"header_signin")]'
-  );
+test.describe("With POM", () => {
+ test.beforeEach(async ({ page }) => {
+ homePage = new HomePage(page);
+ signInForm = new SignInForm(page);
+ await homePage.open();
+ await homePage.ClickSignInButton();
+ });
+
+test("1Valid name", async ({ page }) => {
+      const validName = "Иван";
+  const signupName = page.locator("#signupName");
+    await signInForm.loginWithCredentials(userList.mainUser.email,userList.mainUser.password);
+     await signupName.fill(validName);
+ 
+});
+
+test("Sign in without email", async () => {
+  await signInForm.triggerEmptyErrorOnField('email');
+ await signInForm.verifyErrorIsDisplayed('Email required');
+});
+
+});
+
+test.describe("Without POM", () => {
+  test.beforeEach(async ({ page }) => {
+  const signInButton = page.locator(
+    '//button[contains(@class,"header_signin")]' );
   const emailField = page.getByRole("textbox", { name: "Email" });
   const passwordField = page.getByRole("textbox", { name: "Password" });
   const registrationButton = page.getByRole("button", { name: "Registration" });
 
   await page.goto("/");
-  await signinButton.click();
+  await signInButton.click();
   await emailField.fill(userList.mainUser.email);
   await passwordField.pressSequentially(userList.mainUser.password);
   await registrationButton.click();
 
-  // const signupName = page.locator("#signupName");
-  // await signupName.waitFor({ state: "visible" });
-  // const signupLastName = page.locator("#signupLastName");
-  // await signupLastName.waitFor({ state: "visible" });
-  // const signupEmail = page.locator("#signupEmail");
-  // await signupEmail.waitFor({ state: "visible" });
-  // const signupPassword = page.locator("#signupPassword");
-  // await signupPassword.waitFor({ state: "visible" });
-  // const signupRepeatPassword = page.locator("#signupRepeatPassword");
-  // await signupRepeatPassword.waitFor({ state: "visible" });
-});
+});});
 
 test("Valid name", async ({ page }) => {
   const validName = "Иван";
