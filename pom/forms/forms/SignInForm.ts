@@ -5,7 +5,7 @@ import { Locator } from "@playwright/test";
 export default class SignInForm extends BasePage{
     private readonly emailField : Locator = this.page.locator('//input[(@id="signinEmail"]');
     private readonly passwordField : Locator = this.page.locator('//input[(@id="signinPassword"]');
-     private readonly loginButton : Locator= this.page.locator('//app-signin-modal//button[(@class="btn btn-primary"]');
+     private readonly loginButton : Locator= this.page.locator('.hero-descriptor_btn.btn.btn-primary');
 
      async enterEmail(email: string): Promise<any> {
 await this.emailField.fill(email);
