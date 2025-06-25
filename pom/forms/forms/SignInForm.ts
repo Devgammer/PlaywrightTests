@@ -19,12 +19,7 @@ async clickLoginButton(): Promise<any> {
 await this.loginButton.click();
      }
 
-     async loginWithCredentials(email: string, password: string): Promise<any> {
-        await this.enterEmail(email);
-         await this.enterPassword(password);
-await this.clickLoginButton();
-
-     }
+   
 
 
 
@@ -36,3 +31,8 @@ await element.blur();
 }
 
 }
+
+
+
+
+const signupName = page.locator("#signupName");

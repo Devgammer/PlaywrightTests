@@ -4,7 +4,7 @@ import BasePage from "./BasePage";
 
 export default class HomePage extends BasePage {
 
-private readonly signInButton:  Locator = this.page.locator('//app-signin-modal//button[(@class="btn btn-primary")]'); 
+private readonly signUpButton:  Locator = this.page.locator('.hero-descriptor_btn.btn.btn-primary'); 
 
 
 
@@ -12,7 +12,7 @@ async open(): Promise<any> {
     await this.page.goto("/");
 }
 
-async ClickSignInButton(): Promise<any> {
-await this.signInButton.click();
+async clickSignUnButton(): Promise<any> {
+await this.signUpButton.click();
 }
 }

@@ -1,30 +1,33 @@
 import test, { expect } from "@playwright/test";
 import { userList } from "../test-data/users";
 import HomePage from "../pom/forms/pages/HomePage";
-import SignInForm from "../pom/forms/forms/SignInForm";
+import SignUpForm from "../pom/forms/forms/SignUpForm";
 let homePage: HomePage;
-let signInForm: SignInForm;
+let signUpForm: SignUpForm;
 
 test.describe("With POM", () => {
  test.beforeEach(async ({ page }) => {
  homePage = new HomePage(page);
- signInForm = new SignInForm(page);
+ signUpForm = new SignUpForm(page);
  await homePage.open();
- await homePage.ClickSignInButton();
+ await homePage.clickSignUnButton();
  });
 
-test("1Valid name", async ({ page }) => {
+test("1Valid name", async () => {
       const validName = "Иван";
-  const signupName = page.locator("#signupName");
-    await signInForm.loginWithCredentials(userList.mainUser.email,userList.mainUser.password);
-     await signupName.fill(validName);
- 
+      await signUpForm.enterData(validName, signUpForm.nameField);
+     
+ });
+
+test("Name is required", async () => {
+  await signUpForm.generateErrorByFocusAndBlur(signUpForm.nameField)
+
 });
 
-test("Sign in without email", async () => {
-  await signInForm.triggerEmptyErrorOnField('email');
- await signInForm.verifyErrorIsDisplayed('Email required');
-});
+
+
+
+
 
 });
 
