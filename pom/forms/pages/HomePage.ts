@@ -9,7 +9,7 @@ private readonly signUpButton:  Locator = this.page.locator('.hero-descriptor_bt
 
 
 async open(): Promise<any> {
-    await this.page.goto("/");
+    await this.page.goto("https://qauto.forstudy.space");
 }
 
 async clickSignUnButton(): Promise<any> {

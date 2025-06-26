@@ -1,4 +1,4 @@
-import { Locator } from "@playwright/test";
+import { expect, Locator } from "@playwright/test";
 import BasePage from "../pages/BasePage";
 
 export default class SignUpForm extends BasePage{
@@ -10,8 +10,14 @@ public readonly passwordField:  Locator = this.page.locator('input#signupPasswor
 public readonly repeatPasswordField:  Locator = this.page.locator('input#signupRepeatPassword'); 
 public readonly invalidFeedback:  Locator = this.page.locator('.invalid-feedback'); 
 public readonly registerButton:  Locator = this.page.locator('div.modal-footer .btn-primary'); 
-public readonly successMessage:  Locator = this.page.locator(''); 
-public readonly nameFieldError:  Locator = this.page.locator('.invalid-feedback'); 
+public readonly nameFieldError:  Locator = this.page.locator('#signupName ~ .invalid-feedback'); 
+
+public readonly lastNameErrorMessage:  Locator = this.page.locator('#signupLastName ~ .invalid-feedback'); 
+public readonly emailErrorMessage:  Locator = this.page.locator('#signupEmail ~ .invalid-feedback'); 
+public readonly passwordErrorMessage:  Locator = this.page.locator('#signupPassword ~ .invalid-feedback'); 
+public readonly repeatPasswordErrorMessage: Locator = this.page.locator('#signupRepeatPassword ~ .invalid-feedback'); 
+  toHaveClass: any;
+
 
 
   async enterData(data: string, field: Locator) {
@@ -37,10 +43,57 @@ await field.blur();
 
 }
 
-async verifyDataIsInvalid(field: Locator){
-await this.nameFieldError
 
- }
+
+
+getField(fieldName) {
+        const fields = {
+            'name': this.nameField,
+            'lastName': this.lastNameField,
+            'email': this.emailField,
+            'password': this.passwordField,
+            'repeatPassword': this.repeatPasswordField
+        };
+        return fields[fieldName];
+    }
+
+
+async focusField(fieldName) {
+        const field = this.getField(fieldName);
+        await field.focus();
+    }
+
+    async blurField(fieldName) {
+        const field = this.getField(fieldName);
+        await field.blur();
+    }
+
+    async triggerFieldValidation(fieldName) {
+        await this.focusField(fieldName);
+        await this.blurField(fieldName);
+    }
+
+ getErrorMessage(fieldName) {
+        const errorMessages = {
+            'name': this.emailErrorMessage,
+            'lastName': this.lastNameErrorMessage,
+            'email': this.emailErrorMessage,
+            'password': this.passwordErrorMessage,
+            'repeatPassword': this.repeatPasswordErrorMessage
+        };
+        return errorMessages[fieldName];
+    }
+
+
+
+async expectFieldToHaveError(fieldName, errorMessage) {
+        const field = this.getField(fieldName);
+        const errorMsg = this.getErrorMessage(fieldName);
+
+        await expect(errorMsg).toContainText(errorMessage);
+        await expect(field).toHaveCSS('border-color', 'rgb(220, 53, 69)');
+    }
+
 
 
 async signUpWithValidCredentials(name: string,lastName: string, email: string, password: string, repeatPassword: string) {
@@ -64,4 +117,12 @@ await this.confirmSignUp();
 
 
 
-}
+
+
+ }
+
+
+
+
+
+

@@ -20,16 +20,27 @@ test("1Valid name", async () => {
  });
 
 test("Name is required", async () => {
+
   await signUpForm.generateErrorByFocusAndBlur(signUpForm.nameField)
+ await signUpForm.nameFieldError
+});
+
+
+test("Validate short name length", async () => {
+  const validName = "A";
+
+ await signUpForm.generateErrorByFocusAndBlur(signUpForm.nameField);
+await signUpForm.enterData(validName, signUpForm.nameField);
+await signUpForm.blurField
+ await expect(signUpForm.toHaveClass(".is-invalid"));
+ await signUpForm.nameFieldError
+
+  
+});
 
 });
 
 
-
-
-
-
-});
 
 test.describe("Without POM", () => {
   test.beforeEach(async ({ page }) => {
