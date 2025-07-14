@@ -1,0 +1,70 @@
+name: Playwright Tests (Advanced)
+
+on: workflow_dispatch
+
+env:
+  NODE_VERSION: "18"
+  PLAYWRIGHT_VERSION: "1.40.0"
+
+jobs:
+  test:
+    timeout-minutes: 60 
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [chromium, firefox, webkit, mobile-chrome, mobile-safari]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ env.PLAYWRIGHT_VERSION }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            playwright-${{ env.PLAYWRIGHT_VERSION }}-
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Check Playwright installation
+        run: npx playwright --version
+
+      - name: Run Playwright tests
+        run: npx playwright test --project=${{ matrix.project }} --reporter=html,json
+        env:
+          CI: true
+          PLAYWRIGHT_HTML_REPORT: playwright-report-${{ matrix.project }}
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-${{ matrix.project }}
+          path: |
+            test-results/
+            playwright-report-${{ matrix.project }}/
+          retention-days: 30
+
+      - name: Upload screenshots on failure
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: screenshots-${{ matrix.project }}
+          path: test-results/
+          retention-days: 7
+
+
