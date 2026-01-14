@@ -1,5 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
-
+require('dotenv').config();
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
@@ -32,10 +32,10 @@ export default defineConfig({
     // trace: 'on',
     // video: 'on',
     // screenshot: 'on'
-    baseURL: 'https://qauto.forstudy.space',
+    baseURL: process.env.BASE_URL,
     httpCredentials: {
-      'username': 'guest',
-      'password': 'welcome2qauto'
+      'username': process.env.HTTP_CREDENTIALS_USERNAME!,
+      'password': process.env.HTTP_CREDENTIALS_PASSWORD!
     }
   },
 
@@ -46,15 +46,15 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
 
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
+    // {
+    //   name: 'firefox',
+    //   use: { ...devices['Desktop Firefox'] },
+    // },
 
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
+    // {
+    //   name: 'webkit',
+    //   use: { ...devices['Desktop Safari'] },
+    // },
 
     /* Test against mobile viewports. */
     // {
